@@ -8,9 +8,7 @@
     "dev": "nodemon index.js",
     "test": "jest"
   },
-  "keywords": [
-    
-  ],
+  "keywords": [],
   "author": "Haoyu Guo and Ziyou Geng",
   "license": "ISC",
   "dependencies": {

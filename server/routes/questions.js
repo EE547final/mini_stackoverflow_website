@@ -9,14 +9,16 @@ exports.newQuestion = async (req, res, next) => {
     return res.status(422).json({ result });
   }
   try {
-    const { title, tags, text } = req.body;
+    // const { title, tags, text } = req.body;
+    const { title, tags, text } = req.headers;
     const author = req.user.id;
     const question = await Question.create({
       title,
       author,
       tags,
-      text
+      text,
     });
+    console.log(question);
     res.status(201).json(question);
   } catch (error) {
     next(error);

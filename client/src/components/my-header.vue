@@ -9,17 +9,34 @@
         <a-input-search placeholder="search..." style="width: 870px" @search="onSearch" />
       </a-menu-item>
       <a-menu-item key="3">
-        <a-avatar 
-          shape="square" 
-          :size="small" 
-          style="color: #f56a00; backgroundColor: #fde3cf"
-          v-show="user.id"
-        >
-          USER
-        </a-avatar>
+        <span v-show="user.id">
+          <a-popover placement="bottom" trigger="click">
+            <template v-slot:content>
+              <p>Question</p>
+              <p>Answer</p>
+              <p>Message</p>
+            </template>
+            <template v-slot:title>
+              <span>{{user.username}}</span>
+              <a class='logout' @click="onLogout">log out</a>
+            </template>
+            <a-badge :count="100">
+              <a-avatar shape="square" :size="small" style="color: #f56a00; backgroundColor: #fde3cf">
+                USER
+              </a-avatar>
+            </a-badge>
+          </a-popover>
+        </span>
+      
         <span v-show="!user.id">
-          <a-button size="small" :style="{marginRight:'10px', width: '60px', height: '32px'}">Log in</a-button>
-          <a-button size="small" type="primary" :style="{ width: '60px', height: '32px'}">Sign up</a-button>
+          <a-button size="small" :style="{marginRight:'10px', width: '60px', height: '32px'}">
+            <router-link to="/signin">
+              Sign In
+            </router-link>
+          </a-button>
+          <a-button size="small" type="primary" :style="{ width: '60px', height: '32px'}">
+            <router-link to="/signup" :style="{color: 'white'}">Sign Up</router-link>
+          </a-button>
         </span>
       </a-menu-item>
     </a-menu>
@@ -27,23 +44,19 @@
 </template>
 
 <script>
-  import { defineComponent, ref } from 'vue';
+  import { defineComponent, computed, ref } from 'vue';
   // import axios from 'axios';
   import { message } from 'ant-design-vue';
-  // import store from '@/store';
+  import store from '@/store';
+  // import { useRouter } from 'vue-router';
 
   export default defineComponent({
     name: 'my-header',
     setup() {
-      //user and loginuser are mock data
-      const user = {
-        
-        name: 'test'
-      }
-      const loginUser = ref({
-        loginName: 'test',
-        password: 'test'
-      })
+      // const router = useRouter();
+      // const that = this;
+
+      const user = computed(() => store.state.user)
 
       const loginModalVisible = ref(false);
       const loginModalLoading = ref(false);
@@ -51,23 +64,17 @@
         loginModalVisible.value = true;
       }
 
-      const login = () => {
-        console.log('login......');
-        loginModalLoading.value = true;
-        //TODO: login here
-        loginModalVisible.value = false;
-        message.success("Welcome!");
-      }
-
-      const logout = () => {
-        console.log('logout......');
+      const onLogout =function ()  {
+        console.log('log out...');
+        
+        store.commit("setUser", {});
+        message.success('Log Out');
+        this.$router.push('/signin')
       }
 
       return {
-        login,
-        logout,
+        onLogout,
         user,
-        loginUser,
         loginModalVisible,
         loginModalLoading,
         showLoginModal,
@@ -91,5 +98,8 @@
   float: right;
   color: white;
   padding-left: 10px;
+}
+.logout {
+  float:right;
 }
 </style>

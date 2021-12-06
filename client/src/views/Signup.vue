@@ -2,28 +2,34 @@
   <div class="login-container">
     <my-header></my-header>
     <h2 class="login-title">MyOverflow</h2>
-    <a-spin tip="Loading" :spinning="loginModalLoading">
+    <a-spin tip="Loading" :spinning="signupModalLoading">
       <a-form ref="form" :model="form" class="login-form">
         <h2 class="title">WELCOME</h2>
         <a-form-item>
           <div class="input-title">Email</div>
-          <a-input v-model:value="signinUser.email">
+          <a-input v-model:value="signupUser.email">
           </a-input>
         </a-form-item>
         <a-form-item>
-          <div class="input-title"><span>Password</span> <a class="forgot">Forgot Password?</a></div>
-          <a-input-password v-model:value="signinUser.password">
+          <div class="input-title"><span>Password</span> </div>
+          <a-input-password v-model:value="signupUser.password">
           </a-input-password>
         </a-form-item>
         <a-form-item>
-          <a-button class="submit" type="primary" @click="onSubmit">Sign In</a-button>
+          <div class="input-title"><span>Confirm Password</span> </div>
+          <a-input-password v-model:value="signupUser.confirmPassword">
+          </a-input-password>
         </a-form-item>
-        <div class="signup">Don't have an acoount?
-          <router-link to="/signup">Sign Up</router-link>
+        <a-form-item>
+          <a-button class="submit" type="primary" @click="onSubmit">Sign Up
+          </a-button>
+        </a-form-item>
+        <div class="signup">Already have an acoount?
+          <router-link to="/signin">Sign In</router-link>
         </div>
       </a-form>
     </a-spin>
-    
+  <my-footer></my-footer>
   </div>
 </template>
 
@@ -36,47 +42,71 @@
   import store from '@/store';
 
   export default defineComponent({
-    name: 'Signin',
+    name: 'Signup',
     components: {
       MyHeader,
     },
     setup() {
       const router = useRouter();
 
-      // signin info input by user
-      const signinUser = ref({
+      // signup info input by user
+      const signupUser = ref({
         email: "",
         password: "",
+        confirmPassword: ""
       })
 
       // user info from server
       const user = ref({});
 
       // state control variables
-      const loginModalLoading = ref(false);
+      const signupModalLoading = ref(false);
 
+      // sign up. if success, sign in immediately
       const onSubmit = () => {
-        console.log('sign in started...');
-
-        if(signinUser.value.email && signinUser.value.password) {
-          loginModalLoading.value = true;
-          axios.post('/api/authenticate', signinUser.value, { headers: { 'username': signinUser.value.email, 'password': signinUser.value.password } }
+        console.log('sign up started...');
+        if(signupUser.value.password !== signupUser.value.confirmPassword) {
+          message.error('The two passwords you typed do not match.');
+          return;
+        }
+        if (signupUser.value.email && signupUser.value.password) {
+          signupModalLoading.value = true;
+          axios.post('/api/signup', signupUser.value, { headers: { 'username': signupUser.value.email, 'password': signupUser.value.password } }
           ).then((res) => {
-            loginModalLoading.value = false;
             const data = res.data;
             if (data.success) {
               user.value = data.userInfo;
-              console.log(user.value.token);
-              store.commit('setUser', user.value);
-              message.success("Welcome, " + user.value.username);
-              router.push({
-                path: '/'
-              })
+              message.success("Successfully signed up");
             } else {
               message.error(data.message);
             }
+          }).then((res) => {
+            console.log(res);
+            const tempUser = {
+              username: user.value.username,
+              password: signupUser.value.password
+            }
+            axios.post('/api/authenticate', tempUser, {
+              headers: { 'username': tempUser.username, 'password': tempUser.password}
+            }).then(res => {
+              signupModalLoading.value = false;
+              const data = res.data;
+              if (data.success) {
+                user.value = data.userInfo;
+                store.commit('setUser', user.value);
+                message.success("Welcome, " + user.value.username);
+                router.push({
+                  path: '/'
+                })
+              } else {
+                message.error(data.message);
+              }
+            }).catch((err) => {
+              signupModalLoading.value = false;
+              message.error(err.message);
+            })
           }).catch((err) => {
-            loginModalLoading.value = false;
+            signupModalLoading.value = false;
             message.error(err.message);
           })
         } else {
@@ -85,10 +115,9 @@
       }
 
       return {
-        signinUser,
-        user,
+        signupUser,
         onSubmit,
-        loginModalLoading
+        signupModalLoading
       }
     }
   })
@@ -97,7 +126,7 @@
 <style scoped>
   .login-form {
     width: 565px;
-    height: 410px;
+    height: 500px;
     margin: 0 auto;
     background-color: #fff;
     padding: 40px 110px;
@@ -127,11 +156,13 @@
     height: 45px;
     font-size: 16px;
   }
+
   .forgot {
     float: right;
     font-size: 13px;
     margin-top: 5px
   }
+
   /* 用户登陆标题 */
   .title {
     margin-bottom: 30px;

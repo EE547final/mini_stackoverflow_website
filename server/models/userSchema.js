@@ -19,4 +19,4 @@ const userModel = new mongoose.Schema({
 userModel.set('toJSON', { getters: true });
 
 
-module.exports = mongoose.model('user', userModel);
+module.exports = mongoose.model('users', userModel);

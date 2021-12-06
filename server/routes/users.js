@@ -10,7 +10,7 @@ const { Tokencreated, hashPassword, verifyPassword } = require('../verify/verify
 let check = require('express-validator').check; 
 
 exports.signup = async (req, res) => {
-  // const result = validationResult(req); 
+  // const result = validationResult(req);
   // if (!result.isEmpty()) { // 一定不能是空的
   //   const errors = result.array({ onlyFirstError: true });
   //   return res.status(422).json({ errors });
@@ -22,14 +22,14 @@ exports.signup = async (req, res) => {
   }
 
   try {
-    const { username } = req.body;
-    const hashedPassword = await hashPassword(req.body.password);
+    // const { username } = req.body;
+    const { username } = req.headers
+    const hashedPassword = await hashPassword(req.headers.password);
 
     const userData = {
       username: username.toLowerCase(),
       password: hashedPassword
     };
-
     const existingUsername = await User.findOne({
       username: userData.username
     });
@@ -61,7 +61,8 @@ exports.signup = async (req, res) => {
         message: 'User create successfully!',
         token,
         userInfo,
-        expiresAt
+        expiresAt,
+        success: true
       });
     } 
     else {
@@ -87,7 +88,8 @@ exports.authenticate = async (req, res) => {
     return res.status(422).json({errors});
   }
   try {
-    const { username, password } = req.body;
+    const { username, password } = req.headers;
+
     const user = await User.findOne({
       username: username.toLowerCase()
     });
@@ -97,9 +99,7 @@ exports.authenticate = async (req, res) => {
         message: 'Wrong username or password.'
       });
     }
-
     const passwordValid = await verifyPassword(password, user.password);
-
     if (passwordValid) {
       // const token = createToken(user);
       const token = Tokencreated(user); 
@@ -115,13 +115,13 @@ exports.authenticate = async (req, res) => {
       const decodedToken = jwtDecode(token);
       const expiresAt = decodedToken.exp;
       const { username, role, id, created, profilePhoto } = user;
-      const userInfo = { username, role, id, created, profilePhoto };
+      const userInfo = { username, role, id, created, profilePhoto, token };
 
       res.json({
         message: 'Authentication successful!',
-        token,
         userInfo,
-        expiresAt
+        expiresAt,
+        success: true
       });
     } else {
       res.status(403).json({

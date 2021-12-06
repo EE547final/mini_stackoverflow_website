@@ -53,7 +53,7 @@
       const route = useRoute();
       onMounted(() => {
         console.log(route.params.id);
-      editor.config.height = 200
+        editor.config.height = 200
 
         editor.create()
       })

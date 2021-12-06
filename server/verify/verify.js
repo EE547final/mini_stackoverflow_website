@@ -43,7 +43,6 @@ const hashPassword = (password) => {
 const verifyPassword = (password, hashword) => {
   // result can only be true or false; 
   return bcrypt.compare(password, hashword); 
-
 }
 
 // const verifyPassword = (password, hashword, function (err, result) {

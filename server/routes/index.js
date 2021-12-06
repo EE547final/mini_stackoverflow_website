@@ -3,6 +3,7 @@
 const { upvote, downvote, unvote } = require('./votes');
 const { updateComments, createComment, deleteComment } = require('./comments');
 const jwt = require('jsonwebtoken'); // need jwt to provide 
+const jwtDecode = require('jwt-decode'); // a small browser library that helps decoding JWTs token which are Base64Url encoded.
 
 let check = require('express-validator').check; 
 
@@ -39,13 +40,12 @@ const userAuth = (req, res, next) => {
     return res.status(401).json({ message: 'Authentication invalid.' });
   }
   try {
-    const decodedToken = jwt.verify(token.slice(7), process.env.JWT_SECRET || 'development_secret', {
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET || 'development_secret', {
       algorithms: 'HS256', 
       expiresIn: '10d'
-    }); 
+    });
     req.user = decodedToken;
     next();
-    
   } 
   catch (error) {
     return res.status(401).json({
