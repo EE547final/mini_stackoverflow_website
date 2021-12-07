@@ -88,8 +88,8 @@ exports.authenticate = async (req, res) => {
     return res.status(422).json({errors});
   }
   try {
-    const { username, password } = req.headers;
-
+    const { username, password } = req.body;
+    console.log(username, password);
     const user = await User.findOne({
       username: username.toLowerCase()
     });

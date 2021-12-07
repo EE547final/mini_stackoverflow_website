@@ -1,7 +1,6 @@
 <template>
   <div class="login-container">
-    <my-header></my-header>
-    <h2 class="login-title">MyOverflow</h2>
+    <h2 class="login-title">BufferOverflow</h2>
     <a-spin tip="Loading" :spinning="signupModalLoading">
       <a-form ref="form" :model="form" class="login-form">
         <h2 class="title">WELCOME</h2>
@@ -29,13 +28,11 @@
         </div>
       </a-form>
     </a-spin>
-  <my-footer></my-footer>
   </div>
 </template>
 
 <script>
   import { defineComponent, ref } from 'vue';
-  import MyHeader from '../components/my-header.vue';
   import axios from 'axios';
   import { message } from 'ant-design-vue';
   import { useRouter } from 'vue-router';
@@ -44,7 +41,6 @@
   export default defineComponent({
     name: 'Signup',
     components: {
-      MyHeader,
     },
     setup() {
       const router = useRouter();
@@ -134,7 +130,7 @@
 
   /* 背景 */
   .login-container {
-    position: absolute;
+    /* position: absolute; */
     width: 100%;
     height: 100%;
     background-color: #f0f2f5;

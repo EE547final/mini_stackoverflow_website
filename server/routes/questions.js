@@ -18,7 +18,6 @@ exports.newQuestion = async (req, res, next) => {
       tags,
       text,
     });
-    console.log(question);
     res.status(201).json(question);
   } catch (error) {
     next(error);

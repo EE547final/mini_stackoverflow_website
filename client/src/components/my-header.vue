@@ -1,6 +1,8 @@
 <template>
   <a-layout-header class="header">
-    <div class="logo">StackOverflow</div>
+    <div class="logo">
+      <router-link to="/" :style="{color: 'white'}">BufferOverflow</router-link>
+    </div>
     <a-menu theme="dark" mode="horizontal" :default-selected-keys="['2']" :style="{ lineHeight: '64px' }">
       <a-menu-item key="1">
         Products
@@ -66,7 +68,7 @@
 
       const onLogout =function ()  {
         console.log('log out...');
-        
+
         store.commit("setUser", {});
         message.success('Log Out');
         this.$router.push('/signin')

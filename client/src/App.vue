@@ -1,20 +1,20 @@
 <template>
   <a-layout id="components-layout-demo-top-side-2">
-    <!-- <my-header></my-header> -->
+    <my-header></my-header>
     <router-view/>
-    <!-- <my-footer></my-footer> -->
+    <my-footer></my-footer>
   </a-layout>
 </template>
 
 <script>
   import { defineComponent } from 'vue';
-  // import MyHeader from '@/components/my-header.vue';
-  // import MyFooter from '@/components/my-footer.vue';
+  import MyHeader from '@/components/my-header.vue';
+  import MyFooter from '@/components/my-footer.vue';
   export default defineComponent({
     name: 'app',
     components: {
-      // MyHeader,
-      // MyFooter
+      MyHeader,
+      MyFooter
     },
   });
 </script>

@@ -1,6 +1,5 @@
 <template>
   <a-layout id="components-layout-demo-top-side-2">
-    <MyHeader></MyHeader>
     <a-layout>
       <my-sider></my-sider>
       <a-layout :style="{padding: '0 24px 24px'} ">
@@ -16,48 +15,61 @@
         </a-layout-content>
         <a-layout-content :style="{  padding: '24px', margin: 0, minHeight: '280px' }" >
           <a-space direction="vertical" :style="{width: '100%'}">
-            <question></question>
-            <question></question>
-            <question></question>
-            <question></question>
+            <div 
+              v-for = 'question in questions'
+              :key="question._id"
+            >
+            <question
+              :question="question"
+            ></question>
+              
+            </div>
           </a-space>
           <a-pagination show-quick-jumper :default-current="2" :total="100" @change="onChange" :style="{marginTop: '30px'}"/>
         </a-layout-content>
       </a-layout>
       <my-sider></my-sider>
     </a-layout>
-    <MyFooter></MyFooter>
   </a-layout>
 </template>
 <script>
   import question from '../components/question.vue';
-  import MyHeader from '../components/my-header.vue';
-  import MyFooter from '../components/my-footer.vue';
   import MySider from '../components/my-sider.vue';
+  import axios from 'axios';
+  import { defineComponent, onMounted, ref } from 'vue';
 
-  export default {
+  export default defineComponent({
     name: 'question-list',
     components: {
       question,
-      MyHeader,
-      MyFooter,
       MySider
     },
     setup() {
       const enterQuestionDetail = () => {
         console.log('111');
+      };
+
+      const questions = ref([])
+
+      const queryQuestionList = () => {
+        axios.get("/api/question").then(res => {
+          const data = res.data;
+          if(data.length !== 0) {
+            questions.value = data;
+          }
+        })
       }
+
+      onMounted( () => {
+        queryQuestionList()
+      });
       return {
-        enterQuestionDetail
+        enterQuestionDetail,
+        questions
       }
     },
     
-    // data() {
-    //   return {
-    //     collapsed: false,
-    //   };
-    // },
-  };
+  })
 </script>
 
 <style>

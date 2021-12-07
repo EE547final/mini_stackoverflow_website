@@ -3,19 +3,16 @@
     <a-layout>
       <a-layout-sider width='100' :style="{ background: 'white' }">
         <div>
-          <a-statistic title="votes" :value="100" style="margin-left: 30px; margin-top: 15px" />
-          <a-statistic title="answers" :value="100" style="margin-left: 30px"/>
+          <a-statistic title="votes" :value="(question.votes.length)" style="margin-left: 30px; margin-top: 15px" />
+          <a-statistic title="answers" :value="(question.answers.length)" style="margin-left: 30px"/>
         </div>
       </a-layout-sider>
       <a-layout>
-        <a-card :loading="loading" title="Question title" @click="enterQuestionDetail" >
-          Question Content
+        <a-card :loading="loading" :title="(question.title)">
+          <router-link :to="'/question/'+question._id" :style="{color: 'black'}">{{question.text}}</router-link>
           <div>
-            <a-tag color="orange" :style="{ marginTop: '10px' }">
-              tag1
-            </a-tag>
-            <a-tag color="orange" @click="enterTag">
-              tag2
+            <a-tag v-for = '(tag,index) in question.tags' :key="index" color="orange" :style="{ marginTop: '10px' }">
+              {{tag}}
             </a-tag>
           </div>
         </a-card>
@@ -29,7 +26,13 @@
 </template>
 <script>
   export default {
-    setup() {
+    props: {
+      question: Object
+    },
+    setup(props) {
+      console.log('----------');
+      console.log(props);
+      const temp = 'test'
       const enterQuestionDetail = () => {
         console.log('111');
       }
@@ -38,7 +41,8 @@
       }
       return {
         enterQuestionDetail,
-        enterTag
+        enterTag,
+        temp
       }
     }
   };
