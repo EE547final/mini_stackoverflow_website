@@ -3,7 +3,6 @@
 const { upvote, downvote, unvote } = require('./votes');
 const { updateComments, createComment, deleteComment } = require('./comments');
 const jwt = require('jsonwebtoken'); // need jwt to provide 
-const jwtDecode = require('jwt-decode'); // a small browser library that helps decoding JWTs token which are Base64Url encoded.
 
 let check = require('express-validator').check; 
 
@@ -35,17 +34,22 @@ const remove_comment_qualify = (req, res, next) => {
 }
 
 const userAuth = (req, res, next) => {
+  // console.log('req.headers: ', req.headers);
   const token = req.headers.authorization;
+  // console.log('token: ', token);
   if (!token) {
     return res.status(401).json({ message: 'Authentication invalid.' });
   }
   try {
+    // const decodedToken = jwt.verify(token.slice(7), process.env.JWT_SECRET || 'development_secret', {
+    // 改成header之后不能用slice的前面7位了，必须用全部的位数才可以对应上。
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET || 'development_secret', {
       algorithms: 'HS256', 
       expiresIn: '10d'
-    });
+    }); 
     req.user = decodedToken;
     next();
+    
   } 
   catch (error) {
     return res.status(401).json({
@@ -72,9 +76,7 @@ router.post('/signup', [
     .withMessage('is required')
     .notEmpty()
     .withMessage('cannot be blank')
-    .isLength({ min: 6 })
-    .withMessage('must be at least 6 characters long')
-], signup);
+], signup); // pass
 
 
 
@@ -94,20 +96,22 @@ router.post('/authenticate',  [
     .withMessage('is required')
     .notEmpty()
     .withMessage('cannot be blank')
-    .isLength({ min: 6 })
-    .withMessage('must be at least 6 characters long')
-], authenticate);
+], authenticate); // pass
 
 //users
-router.get('/users', listUsers);
-router.get('/users/:search', searchuser);
-router.get('/user/:username', finduser);
+router.get('/users', listUsers); // pass
+
+router.get('/users/:search', searchuser); // pass 
+router.get('/user/:username', finduser); // pass
 
 //questions
 router.param('question', updateQuestions);
+// router.param(name, function) 
+// router.param()函数将触发回调函数。
+// 即使用户多次路由到该参数，此回调函数也仅在请求响应周期中被调用一次。
 
 
-router.post('/questions', [userAuth, [
+router.post('/questions', [userAuth, [ // pass all 
   check('title')
     .exists()
     .withMessage('is required')
@@ -122,9 +126,9 @@ router.post('/questions', [userAuth, [
     .withMessage('must be at most 1000 characters long'),
   check('tags').exists().withMessage('is required')]], newQuestion);
 
-router.get('/question/:question', showQuestion);
-router.get('/question', listQuestions);
-router.get('/questions/:tags', listByTags);
+router.get('/question/:question', showQuestion); // pass, can show all questions 
+router.get('/question', listQuestions); // pass
+router.get('/questions/:tags', listByTags); // pass， 用score来统计不同tag出现的次数。
 router.get('/question/user/:username', listByUser);
 router.delete('/question/:question', [userAuth, remove_question_qualify], removeQuestion); // 为什么这里无法删除。
 
@@ -192,6 +196,8 @@ module.exports = (app) => {
     res.status(500).send('Something go wrong!');
     next(error);
   })
+
+
   // app.use((req, res, next) => {
   //   const error = new Error('Not found');
   //   error.status = 404;
