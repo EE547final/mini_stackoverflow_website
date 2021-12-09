@@ -14,7 +14,7 @@ axios.interceptors.request.use(
     console.log("request detail：", config);
     const token = store.state.user.token;
     if (token) {
-      config.headers.token = token;
+      config.headers.authorization = token;
       console.log("add token in request header：", token);
     }
     return config;

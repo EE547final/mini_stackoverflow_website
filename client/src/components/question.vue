@@ -9,17 +9,15 @@
       </a-layout-sider>
       <a-layout>
         <a-card :loading="loading" :title="(question.title)">
-          <router-link :to="'/question/'+question._id" :style="{color: 'black'}">{{question.text}}</router-link>
+          <router-link :to="'/question/'+question._id" :style="{color: 'black'}">
+            <div v-html="text"></div>
+          </router-link>
           <div>
             <a-tag v-for = '(tag,index) in question.tags' :key="index" color="orange" :style="{ marginTop: '10px' }">
               {{tag}}
             </a-tag>
           </div>
         </a-card>
-        <!-- <a-card>
-          
-        </a-card> -->
-        
       </a-layout>
     </a-layout>
   </div>
@@ -31,18 +29,14 @@
     },
     setup(props) {
       console.log('----------');
-      console.log(props);
-      const temp = 'test'
-      const enterQuestionDetail = () => {
-        console.log('111');
-      }
+      console.log(props.question.text);
+      const text = props.question.text.split('</p>')[0]+' ...'+'</p>';
       const enterTag = () => {
         console.log("222");
       }
       return {
-        enterQuestionDetail,
         enterTag,
-        temp
+        text,
       }
     }
   };

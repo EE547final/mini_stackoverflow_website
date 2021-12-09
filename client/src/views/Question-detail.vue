@@ -17,15 +17,27 @@
                 </div>
               </div>
               <a-divider />
-              <div class="content">
-                {{question.text}}
+              <div class="content" >
+                <div v-html="question.text"></div>
               </div>
             </div>
-            <a-divider>Your Answer</a-divider>
-            <div id="content">
-
+            <div v-if="showAnswer">
+              <a-divider>{{question.answers.length}} Answer(s)</a-divider>
+              <div
+                v-for='answer in question.answers'
+                :key="answer._id"
+              >
+                <div v-html="answer.text"></div>
+                <div>answerd by: {{answer.author.username}}</div>
+                <br>
+                <br>
+                <br>
+              </div>
             </div>
-            <a-button class="submit" type="primary">Submit Answer</a-button>
+            
+            <a-divider>Your Answer</a-divider>
+            <div id="content"></div>
+            <a-button class="submit" @click="onSubmit"  type="primary">Submit Answer</a-button>
           </a-card>
         </a-layout-content>
       </a-layout>
@@ -39,6 +51,8 @@
   import axios from 'axios';
   import MySider from '../components/my-sider.vue';
   import E from 'wangeditor'
+  // import { useRouter } from 'vue-router';
+
 
   export default {
     name: 'question-detail',
@@ -48,18 +62,37 @@
     setup() {
       const editor = new E('#content');
       const route = useRoute();
+      // const router = useRouter();
+
       const id = route.params.id;
       const question = ref()
+      const showAnswer = ref(false)
+      const body = ref();
+      body.value = {}
 
       const queryQuestion = (id) => {
         axios.get("/api/question/" + id).then(res => {
           const data = res.data;
           if (data.length !== 0) {
             question.value = data;
+            showAnswer.value = question.value.answers.length !== 0
+            // showAnswer.value = true;
           }
         })
       }
-        queryQuestion(id)
+      queryQuestion(id)
+
+      const onSubmit = () => {
+        body.value = editor.txt.html();
+        axios.post("/api/answer/"+question.value.id, {text: body.value}).then(res => {
+          const data = res.data;
+          console.log(data);
+          location.reload()
+          this.$router.go(0)
+          console.log('------=-=-=-=-=-=-=-=-=');
+        })
+
+      }
 
       onMounted(() => {
         editor.config.height = 200
@@ -68,7 +101,9 @@
 
       return {
         editor,
-        question
+        question,
+        showAnswer,
+        onSubmit
       }
     }
   };

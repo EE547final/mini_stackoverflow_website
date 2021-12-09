@@ -1,11 +1,11 @@
 <template>
-  <div class="login-container">
+  <div>
     <h2 class="login-title">BufferOverflow</h2>
     <a-spin tip="Loading" :spinning="signupModalLoading">
       <a-form ref="form" :model="form" class="login-form">
         <h2 class="title">WELCOME</h2>
         <a-form-item>
-          <div class="input-title">Email</div>
+          <div class="input-title">Username</div>
           <a-input v-model:value="signupUser.email">
           </a-input>
         </a-form-item>
@@ -20,8 +20,7 @@
           </a-input-password>
         </a-form-item>
         <a-form-item>
-          <a-button class="submit" type="primary" @click="onSubmit">Sign Up
-          </a-button>
+          <a-button size="large" @click="onSubmit" type="primary" block>Sign Up</a-button>
         </a-form-item>
         <div class="signup">Already have an acoount?
           <router-link to="/signin">Sign In</router-link>

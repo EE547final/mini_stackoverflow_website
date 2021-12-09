@@ -1,11 +1,11 @@
 <template>
-  <div class="login-container">
+  <div >
     <h2 class="login-title">BufferOverflow</h2>
     <a-spin tip="Loading" :spinning="loginModalLoading">
       <a-form ref="form" :model="form" class="login-form">
         <h2 class="title">WELCOME</h2>
         <a-form-item>
-          <div class="input-title">Email</div>
+          <div class="input-title">Username</div>
           <a-input v-model:value="signinUser.email">
           </a-input>
         </a-form-item>
@@ -15,7 +15,8 @@
           </a-input-password>
         </a-form-item>
         <a-form-item>
-          <a-button class="submit" type="primary" @click="onSubmit">Sign In</a-button>
+          <!-- <a-button type="primary" ></a-button> -->
+          <a-button size="large" @click="onSubmit" type="primary" block>Sign In</a-button>
         </a-form-item>
         <div class="signup">Don't have an acoount?
           <router-link to="/signup">Sign Up</router-link>
@@ -31,38 +32,32 @@
   import { message } from 'ant-design-vue';
   import { useRouter } from 'vue-router';
   import store from '@/store';
-
   export default defineComponent({
     name: 'Signin',
     components: {
     },
     setup() {
       const router = useRouter();
-
       // signin info input by user
       const signinUser = ref({
         email: "",
         password: "",
       })
-
       // user info from server
       const user = ref({});
-
       // state control variables
       const loginModalLoading = ref(false);
-
       const onSubmit = () => {
         console.log('sign in started...');
-
-        if(signinUser.value.email && signinUser.value.password) {
+        if (signinUser.value.email && signinUser.value.password) {
           loginModalLoading.value = true;
           axios.post('/api/authenticate', signinUser.value, { headers: { 'username': signinUser.value.email, 'password': signinUser.value.password } }
           ).then((res) => {
             loginModalLoading.value = false;
             const data = res.data;
-            if (data.success) {
+            if (data.token) {
               user.value = data.userInfo;
-              console.log(user.value.token);
+              user.value.token = data.token
               store.commit('setUser', user.value);
               message.success("Welcome, " + user.value.username);
               router.push({
@@ -79,7 +74,6 @@
           message.error("username and password is required");
         }
       }
-
       return {
         signinUser,
         user,
@@ -99,16 +93,6 @@
     padding: 40px 110px;
   }
 
-  /* 背景 */
-  .login-container {
-    /* position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: #f0f2f5;
-    background-size: 100% 100%; */
-    margin: 0
-  }
-
   /* Log */
   .login-title {
     /* color: #fff; */
@@ -120,15 +104,16 @@
 
   /* 登陆按钮 */
   .submit {
-    width: 100%;
     height: 45px;
     font-size: 16px;
   }
+
   .forgot {
     float: right;
     font-size: 13px;
     margin-top: 5px
   }
+
   /* 用户登陆标题 */
   .title {
     margin-bottom: 30px;

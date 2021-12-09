@@ -1,13 +1,13 @@
 <template>
   <a-layout id="components-layout-demo-top-side-2">
     <my-header></my-header>
-    <router-view/>
+    <div id="v-content" v-bind:style="{minHeight: height+'px'}"><router-view/></div>
     <my-footer></my-footer>
   </a-layout>
 </template>
 
 <script>
-  import { defineComponent } from 'vue';
+  import { defineComponent, onMounted, ref } from 'vue';
   import MyHeader from '@/components/my-header.vue';
   import MyFooter from '@/components/my-footer.vue';
   export default defineComponent({
@@ -16,6 +16,16 @@
       MyHeader,
       MyFooter
     },
+    setup () {
+      const height = ref(0); 
+      onMounted(() => {
+        height.value = document.documentElement.clientHeight - 140;
+        window.onresize = () => { height.value = document.documentElement.clientHeight - 140 }
+      }) 
+      return {
+        height
+      }
+    }
   });
 </script>
 

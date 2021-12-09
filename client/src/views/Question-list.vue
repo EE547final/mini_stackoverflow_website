@@ -8,9 +8,12 @@
             <span >
               Top Questions
             </span>
-            <a-button type="primary" :style="{float: 'right', marginTop: '10px'}">
-              Ask Question
-            </a-button>
+            <router-link to="/question/ask" >
+              <a-button type="primary" :style="{float: 'right', marginTop: '10px'}">
+                Ask Question
+              </a-button>
+            </router-link>
+            
           </div>
         </a-layout-content>
         <a-layout-content :style="{  padding: '24px', margin: 0, minHeight: '280px' }" >
