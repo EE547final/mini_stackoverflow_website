@@ -52,6 +52,7 @@
   import axios from 'axios';
   import store from '@/store';
   import { useRouter } from 'vue-router';
+  import i18next from 'i18next';
 
   export default {
     name: 'question-ask',
@@ -82,7 +83,7 @@
       const router = useRouter();
 
       // editor 
-      const editor = new E('#content');
+      const editor = new E('#content')
       const question = ref({
         title: '',
         tags: '',
@@ -99,8 +100,6 @@
           const data = res.data;
           if(data._id) {
             message.success("Successfully Post");
-            console.log('path000000000000000000');
-            console.log('/question/' + data._id);
             router.push({
               path: '/question/'+data._id
             })
@@ -110,8 +109,11 @@
 
       onMounted(() => {
         editor.config.height = 200
+        editor.config.lang = 'en'
+        editor.i18next = i18next
         editor.create()
       })
+      
       return {
         editor,
         question,

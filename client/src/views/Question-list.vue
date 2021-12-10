@@ -28,16 +28,17 @@
               
             </div>
           </a-space>
-          <a-pagination show-quick-jumper :default-current="2" :total="100" @change="onChange" :style="{marginTop: '30px'}"/>
         </a-layout-content>
       </a-layout>
-      <my-sider></my-sider>
+      <my-rsider></my-rsider>
     </a-layout>
   </a-layout>
 </template>
 <script>
   import question from '../components/question.vue';
   import MySider from '../components/my-sider.vue';
+  import MyRsider from '../components/my-rsider.vue';
+
   import axios from 'axios';
   import { defineComponent, onMounted, ref } from 'vue';
 
@@ -45,7 +46,8 @@
     name: 'question-list',
     components: {
       question,
-      MySider
+      MySider,
+      MyRsider
     },
     setup() {
       const enterQuestionDetail = () => {
