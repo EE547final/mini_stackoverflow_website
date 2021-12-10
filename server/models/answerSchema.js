@@ -13,7 +13,8 @@ const answerSchema = new mongoose.Schema({
     ref: 'user',
     required: true
   },
-  created: { type: Date, default: Date.now },
+  created: { 
+    type: Date, default: Date.now },
   text: { type: String, required: true },
   score: { type: Number, default: 0 },
   votes: [voteSchema],
