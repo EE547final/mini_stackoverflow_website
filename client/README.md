@@ -1,4 +1,4 @@
-# client
+# BufferOverflow Client Side
 
 ## Project setup
 ```
