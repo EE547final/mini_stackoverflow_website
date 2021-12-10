@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 // mongoose中任何任何事物都是从Schema开始的。每一个Schema对应MongoDB中的一个集合（collection）。
 // Schema中定义了集合中文档（document）的样式。
 
-const userModel = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   username: { 
     type: String, 
     required: true, 
@@ -34,7 +34,7 @@ const userModel = new mongoose.Schema({
   }
 });
 
-userModel.set('toJSON', { getters: true });
+userSchema.set('toJSON', { getters: true });
 // 和toObject类似，选择了这个选项为true之后，但是只有当实例调用了toJSON方法后，才会起作用。 
 // 有的部分没有格式化，用tojson的方法，把这个全部转换成JSON格式。
-module.exports = mongoose.model('user', userModel);
+module.exports = mongoose.model('user', userSchema);

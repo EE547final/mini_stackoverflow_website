@@ -134,7 +134,7 @@ router.delete('/question/:question', [userAuth, remove_question_qualify], remove
 
 //tags
 const question_model = require('../models/questionSchema'); 
-router.get('/tags/populertags' , async (req, res, next) => {
+router.get('/tags' , async (req, res, next) => {
   try{
     const tags = await question_model.aggregate([ 
       // aggregate 聚合管道，
