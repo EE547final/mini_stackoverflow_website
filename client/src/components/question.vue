@@ -28,8 +28,6 @@
       question: Object
     },
     setup(props) {
-      console.log('----------');
-      console.log(props.question.text);
       const text = props.question.text.split('</p>')[0]+' ...'+'</p>';
       const enterTag = () => {
         console.log("222");

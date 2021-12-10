@@ -24,20 +24,38 @@
             <div v-if="showAnswer">
               <a-divider>{{question.answers.length}} Answer(s)</a-divider>
               <div
-                v-for='answer in question.answers'
+                v-for='(answer, index) in question.answers'
                 :key="answer._id"
+                class="content"
               >
-                <div v-html="answer.text"></div>
+                <!-- <div v-html="answer.text"></div>
                 <div>answerd by: {{answer.author.username}}</div>
                 <br>
                 <br>
-                <br>
+                <br> -->
+                <a-card v-if="showState" :title="'answered by: ' + (answer.author.username)" style="width: 100%">
+                  <div v-html="answer.text"></div>
+                  <a 
+                    class='logout' 
+                    @click="onDelete(answer.id)"
+                    v-if="answer.author._id === userInfo.id || userInfo.role === 'admin' "
+                  >delete</a>
+                  
+                  <a-button 
+                    :style="{marginRight: '20px'}"  
+                    :type="(style1[index])" 
+                    @click="onVote(answer.id, index)" 
+                    shape="circle"
+                    
+                  >▲{{answer.votes.length}}</a-button>
+                  <a-button :type="(style2[index])" @click="onUnvote(answer.id, index)" shape="circle">▼</a-button>
+                </a-card>
               </div>
             </div>
             
             <a-divider>Your Answer</a-divider>
             <div id="content"></div>
-            <a-button class="submit" @click="onSubmit"  type="primary">Submit Answer</a-button>
+            <a-button class="submit" @click="onSubmit" type="primary">Submit Answer</a-button>
           </a-card>
         </a-layout-content>
       </a-layout>
@@ -47,14 +65,16 @@
 </template>
 <script>
   import { useRoute } from 'vue-router';
-  import { onMounted, ref } from 'vue' 
+  import { onMounted, ref, defineComponent, nextTick } from 'vue' 
   import axios from 'axios';
   import MySider from '../components/my-sider.vue';
   import E from 'wangeditor'
+  import i18next from 'i18next';
   // import { useRouter } from 'vue-router';
+  import store from '@/store';
+  import { message } from 'ant-design-vue';
 
-
-  export default {
+  export default defineComponent( {
     name: 'question-detail',
     components: {
       MySider,
@@ -65,15 +85,29 @@
       // const router = useRouter();
 
       const id = route.params.id;
+      const userInfo =  store.state.user;
       const question = ref()
       const showAnswer = ref(false)
       const body = ref();
       body.value = {}
 
+      // view control
+      const style1 = ref(['default', 'default', 'default', 'default', 'default', 'default', 'default', 'default', 'default', 'default'])
+      const style2 = ref(['default', 'default', 'default', 'default', 'default', 'default', 'default', 'default', 'default', 'default'])
+      const showState = ref(true)
+      const reloadButton = () => {
+        showState.value = false;
+        nextTick(() => {
+          showState.value = true;
+        })
+      }
+
       const queryQuestion = (id) => {
         axios.get("/api/question/" + id).then(res => {
           const data = res.data;
           if (data.length !== 0) {
+            console.log('-------------answer data==========');
+            console.log(data);
             question.value = data;
             showAnswer.value = question.value.answers.length !== 0
             // showAnswer.value = true;
@@ -82,20 +116,56 @@
       }
       queryQuestion(id)
 
+      const onVote = (id, index) => {
+        style1.value[index] = style1.value[index] === 'default'? 'primary' : 'default';
+        if(style1.value[index] === 'primary') {
+          axios.get("/api/votes/upvote/"+ question.value.id+ "/" + id).then((res) => {
+            question.value = res.data;
+            reloadButton()
+          })
+        } else {
+          axios.get("/api/votes/unvote/" + question.value.id + "/" + id).then((res) => {
+            question.value = res.data;
+            reloadButton()
+          })
+        }
+        
+      }
+
+      const onUnvote = (id, index) => {
+        style2.value[index] = style2.value[index] === 'default' ? 'primary' : 'default'
+        axios.get("/api/votes/downvote/" + question.value.id + "/" + id).then(res => {
+          question.value = res.data;
+          console.log(question.value);
+          reloadButton()
+        })
+      }
+
       const onSubmit = () => {
         body.value = editor.txt.html();
         axios.post("/api/answer/"+question.value.id, {text: body.value}).then(res => {
           const data = res.data;
+          console.log('-------------answer data==========');
           console.log(data);
           location.reload()
           this.$router.go(0)
-          console.log('------=-=-=-=-=-=-=-=-=');
         })
+      }
 
+      const onDelete = (id) => {
+        axios.delete("/api/answer/" + question.value.id + "/" + id).then(() => {
+          message.success(("Answer is Deleted"))
+          location.reload()
+          this.$router.go(0)
+        }).catch((err) => {
+          message.error(err.message);
+        })
       }
 
       onMounted(() => {
         editor.config.height = 200
+        editor.config.lang = 'en'
+        editor.i18next = i18next
         editor.create()
       })
 
@@ -103,10 +173,17 @@
         editor,
         question,
         showAnswer,
-        onSubmit
+        onSubmit,
+        onDelete,
+        userInfo,
+        style1,
+        style2,
+        onVote,
+        onUnvote,
+        showState
       }
     }
-  };
+  });
 </script>
 
 <style>
