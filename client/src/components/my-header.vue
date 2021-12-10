@@ -8,7 +8,7 @@
         Products
       </a-menu-item>
       <a-menu-item key="2">
-        <a-input-search placeholder="search..." style="width: 870px" @search="onSearch" />
+        <a-input-search placeholder="search..." style="width: 480px" @search="onSearch" />
       </a-menu-item>
       <a-menu-item key="3">
         <span v-show="user.id">
