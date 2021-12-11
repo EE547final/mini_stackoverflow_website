@@ -22,7 +22,7 @@
       const tags = ref();
       tags.value = new Set()
       const getTags = () => {
-        axios.get("/api/tags/populertags").then(res => {
+        axios.get("/api/tags").then(res => {
           for(let tag of res.data) {
             const tempTag = tag._id.split(',');
             tags.value.add(...tempTag);
