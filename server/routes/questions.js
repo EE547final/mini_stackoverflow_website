@@ -8,16 +8,25 @@ exports.newQuestion = async (req, res, next) => {
   if (!result.isEmpty()) {
     return res.status(422).json({ result });
   }
+    console.log('new question-------------------------------');
+
   try {
-    // const { title, tags, text } = req.body;
-    const { title, tags, text } = req.headers;
+    const { title, tags } = req.headers;
+    const {text} = req.body
+    // req.headers:  {
+    //   title: 'who is the best football player ',
+    //   text: 'messi or ronaldo or neymar or somebody else ',
+    //   tags: [ 'football' ]
+    // }
     const author = req.user.id;
+    console.log('text: ', text);
     const question = await Question.create({
       title,
       author,
       tags,
-      text,
+      text
     });
+    console.log('question: ', question);
     res.status(201).json(question);
   } catch (error) {
     next(error);
@@ -57,7 +66,7 @@ exports.showQuestion = async (req, res, next) => {
 
 exports.listQuestions = async (req, res, next) => {
   try {
-    const { sortType = '-score' } = req.body;
+    const { sortType = '-score' } = req.headers;
     const questions = await Question.find().sort(sortType);
     res.json(questions);
   } catch (error) {
@@ -78,7 +87,7 @@ exports.listByTags = async (req, res, next) => {
 exports.listByUser = async (req, res, next) => {
   try {
     const { username } = req.params;
-    const { sortType = '-created' } = req.body;
+    const { sortType = '-created' } = req.headers;
     const author = await User.findOne({ username });
     const questions = await Question.find({ author: author.id }).sort(sortType).limit(10);
     res.json(questions);

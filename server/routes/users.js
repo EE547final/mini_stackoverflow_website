@@ -7,10 +7,10 @@ const { body, validationResult } = require('express-validator');
 const { Tokencreated, hashPassword, verifyPassword } = require('../verify/verify');
 // https://www.jianshu.com/p/1d329a1f3dfb
 
-let check = require('express-validator').check; 
+// let check = require('express-validator').check; 
 
 exports.signup = async (req, res) => {
-  // const result = validationResult(req);
+  // const result = validationResult(req); 
   // if (!result.isEmpty()) { // 一定不能是空的
   //   const errors = result.array({ onlyFirstError: true });
   //   return res.status(422).json({ errors });
@@ -22,14 +22,14 @@ exports.signup = async (req, res) => {
   }
 
   try {
-    // const { username } = req.body;
-    const { username } = req.headers
+    const { username } = req.headers;
     const hashedPassword = await hashPassword(req.headers.password);
 
     const userData = {
       username: username.toLowerCase(),
       password: hashedPassword
     };
+
     const existingUsername = await User.findOne({
       username: userData.username
     });
@@ -61,8 +61,7 @@ exports.signup = async (req, res) => {
         message: 'User create successfully!',
         token,
         userInfo,
-        expiresAt,
-        success: true
+        expiresAt
       });
     } 
     else {
@@ -84,12 +83,18 @@ exports.authenticate = async (req, res) => {
   //   return res.status(422).json({ errors });
   // }
   const errors = validationResult(req); 
+  // console.log('errors: ', errors);
   if (!errors.isEmpty()) {
     return res.status(422).json({errors});
   }
   try {
-    const { username, password } = req.body;
-    console.log(username, password);
+    const { username, password } = req.headers;
+    // body 是 x-www-form-urlencoded
+    // console.log('req.headers: ', req.headers);
+    // // req.headers:  { username: 'guohaoyu', password: 'guohaoyu110' }
+    // console.log('username: ', username);
+    // console.log('password: ', password);
+  
     const user = await User.findOne({
       username: username.toLowerCase()
     });
@@ -99,7 +104,9 @@ exports.authenticate = async (req, res) => {
         message: 'Wrong username or password.'
       });
     }
+
     const passwordValid = await verifyPassword(password, user.password);
+
     if (passwordValid) {
       // const token = createToken(user);
       const token = Tokencreated(user); 
@@ -115,13 +122,12 @@ exports.authenticate = async (req, res) => {
       const decodedToken = jwtDecode(token);
       const expiresAt = decodedToken.exp;
       const { username, role, id, created, profilePhoto } = user;
-      const userInfo = { username, role, id, created, profilePhoto, token };
-
+      const userInfo = { username, role, id, created, profilePhoto };
       res.json({
         message: 'Authentication successful!',
+        token,
         userInfo,
-        expiresAt,
-        success: true
+        expiresAt
       });
     } else {
       res.status(403).json({
@@ -139,7 +145,7 @@ exports.authenticate = async (req, res) => {
 
 exports.listUsers = async (req, res, next) => {
   try {
-    const { sortType = '-created' } = req.body;
+    const { sortType = '-created' } = req.headers;
     const users = await User.find().sort(sortType);
     res.json(users);
   } catch (error) {
