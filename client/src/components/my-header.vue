@@ -8,7 +8,8 @@
         Products
       </a-menu-item>
       <a-menu-item key="2">
-        <a-input-search placeholder="search..." style="width: 870px" @search="onSearch" />
+        <a-input-search v-model:value="search" placeholder="search..." style="width: 870px" @search="onSearch" />
+        <a-button type="primary" @click="onSearch">Search</a-button>
       </a-menu-item>
       <a-menu-item key="3">
         <span v-show="user.id">
@@ -22,11 +23,9 @@
               <span>{{user.username}}</span>
               <a class='logout' @click="onLogout">log out</a>
             </template>
-            <a-badge :count="100">
               <a-avatar shape="square" :size="small" style="color: #f56a00; backgroundColor: #fde3cf">
                 USER
               </a-avatar>
-            </a-badge>
           </a-popover>
         </span>
       
@@ -50,15 +49,17 @@
   // import axios from 'axios';
   import { message } from 'ant-design-vue';
   import store from '@/store';
-  // import { useRouter } from 'vue-router';
+  import { useRouter } from 'vue-router';
 
   export default defineComponent({
     name: 'my-header',
     setup() {
-      // const router = useRouter();
+      const router = useRouter();
       // const that = this;
+      
+      const search = ref();
 
-      const user = computed(() => store.state.user)
+      const user = computed(() => store.state.user);
 
       const loginModalVisible = ref(false);
       const loginModalLoading = ref(false);
@@ -74,12 +75,22 @@
         this.$router.push('/signin')
       }
 
+      const onSearch = function () {
+        console.log('/question/result/' + search.value);
+        // this.$router.push('/question/result/' + search.value)
+        router.push({
+          path: '/question/result/' + search.value
+        })
+      }
+
       return {
         onLogout,
         user,
         loginModalVisible,
         loginModalLoading,
         showLoginModal,
+        onSearch,
+        search
       }
     }
   })

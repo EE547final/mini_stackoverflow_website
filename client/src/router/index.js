@@ -5,6 +5,7 @@ import QuestionDetail from "../views/Question-detail.vue"
 import QuestionAsk from "../views/Question-ask.vue";
 import Signin from "../views/Signin.vue"
 import Signup from "../views/Signup.vue"
+import QuestionResult from "../views/Question-result.vue"
 
 const routes = [
   {
@@ -16,6 +17,11 @@ const routes = [
     path: "/question/:id",
     name: "QuestionDetail",
     component: QuestionDetail,
+  },
+  {
+    path: "/question/result/:key",
+    name: "QuestionResult",
+    component: QuestionResult,
   },
   {
     path: "/question/ask",
