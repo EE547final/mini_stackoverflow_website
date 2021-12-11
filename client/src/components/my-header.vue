@@ -8,7 +8,8 @@
         Products
       </a-menu-item>
       <a-menu-item key="2">
-        <a-input-search v-model:value="search" placeholder="search..." style="width: 870px" @search="onSearch" />
+        <!-- "vetur.validation.template": false -->
+        <a-input-search v-model:value="search" placeholder="search..." style="width: 640px" @search="onSearch" />
         <a-button type="primary" @click="onSearch">Search</a-button>
       </a-menu-item>
       <a-menu-item key="3">
