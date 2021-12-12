@@ -1,9 +1,6 @@
 # BufferOverflow: Mini StackOverflow Website
 
 
-
-
-
 ## Local development setup 
 
 **Step 1: Install dependencies**
