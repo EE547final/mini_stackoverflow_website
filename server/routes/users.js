@@ -92,14 +92,15 @@ exports.authenticate = async (req, res) => {
     // body 是 x-www-form-urlencoded
     // console.log('req.headers: ', req.headers);
     // // req.headers:  { username: 'guohaoyu', password: 'guohaoyu110' }
-    // console.log('username: ', username);
-    // console.log('password: ', password);
+    console.log('username: ', username);
+    console.log('password: ', password);
   
     const user = await User.findOne({
       username: username.toLowerCase()
     });
 
     if (!user) {
+      console.log('user: ', user);
       return res.status(403).json({
         message: 'Wrong username or password.'
       });
@@ -133,6 +134,7 @@ exports.authenticate = async (req, res) => {
       res.status(403).json({
         message: 'Wrong username or password.'
       });
+      // request failed with status code 403
     }
   } catch (error) {
     return res.status(400).json({ 
