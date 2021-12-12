@@ -69,14 +69,13 @@
           axios.post('/api/signup', signupUser.value, { headers: { 'username': signupUser.value.email, 'password': signupUser.value.password } }
           ).then((res) => {
             const data = res.data;
-            if (data.success) {
+            if (data.token) {
               user.value = data.userInfo;
               message.success("Successfully signed up");
             } else {
               message.error(data.message);
             }
-          }).then((res) => {
-            console.log(res);
+          }).then(() => { 
             const tempUser = {
               username: user.value.username,
               password: signupUser.value.password
@@ -86,7 +85,7 @@
             }).then(res => {
               signupModalLoading.value = false;
               const data = res.data;
-              if (data.success) {
+              if (data.token) {
                 user.value = data.userInfo;
                 store.commit('setUser', user.value);
                 message.success("Welcome, " + user.value.username);
@@ -108,6 +107,56 @@
           message.error("username and password is required");
         }
       }
+      // const onSubmit = () => {
+      //   console.log('sign up started...');
+      //   if(signupUser.value.password !== signupUser.value.confirmPassword) {
+      //     message.error('The two passwords you typed do not match.');
+      //     return;
+      //   }
+      //   if (signupUser.value.email && signupUser.value.password) {
+      //     signupModalLoading.value = true;
+      //     axios.post('/api/signup', signupUser.value, { headers: { 'username': signupUser.value.email, 'password': signupUser.value.password } }
+      //     ).then((res) => {
+      //       const data = res.data;
+      //       if (data.success) {
+      //         user.value = data.userInfo;
+      //         message.success("Successfully signed up");
+      //       } else {
+      //         message.error(data.message);
+      //       }
+      //     }).then((res) => {
+      //       console.log(res);
+      //       const tempUser = {
+      //         username: user.value.username,
+      //         password: signupUser.value.password
+      //       }
+      //       axios.post('/api/authenticate', tempUser, {
+      //         headers: { 'username': tempUser.username, 'password': tempUser.password}
+      //       }).then(res => {
+      //         signupModalLoading.value = false;
+      //         const data = res.data;
+      //         if (data.success) {
+      //           user.value = data.userInfo;
+      //           store.commit('setUser', user.value);
+      //           message.success("Welcome, " + user.value.username);
+      //           router.push({
+      //             path: '/'
+      //           })
+      //         } else {
+      //           message.error(data.message);
+      //         }
+      //       }).catch((err) => {
+      //         signupModalLoading.value = false;
+      //         message.error(err.message);
+      //       })
+      //     }).catch((err) => {
+      //       signupModalLoading.value = false;
+      //       message.error(err.message);
+      //     })
+      //   } else {
+      //     message.error("username and password is required");
+      //   }
+      // }
 
       return {
         signupUser,
