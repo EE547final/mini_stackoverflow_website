@@ -26,6 +26,15 @@ npm install
 npm run serve
 ```
 
+Build for development and run hot-reload website:
+
+```
+npm run serve
+```
+
+The default server connected in this setting is hosted at http://192.168.0.100:8081/. It might be slow when you open it sicne it will need a few seconds to relaod and restart. 
+
+
 <!-- Build for development and run hot-reload website:
 
 ```
@@ -36,7 +45,7 @@ yarn run serve
 Thus, **it might be slow when you open it since the dyno will be suspended when unused for a long time and will
 take a minute to restart**.
  -->
-<!-- ![Screen Shot 2021-11-20 at 13 07 28](https://user-images.githubusercontent.com/7168454/142740916-c72bb60f-e1ce-4fe9-84d3-72cea9a1d7cf.png) -->
+![image1](images/image1.png)
 
 
 
