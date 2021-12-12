@@ -4,8 +4,6 @@ const { upvote, downvote, unvote } = require('./votes');
 const jwt = require('jsonwebtoken'); // need jwt to provide 
 
 let check = require('express-validator').check; 
-
-
 const express = require('express');
 const router = express.Router(); // 创建路由容器。
 
