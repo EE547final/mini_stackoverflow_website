@@ -1,7 +1,6 @@
 'use strict'
-// const {listPopulerTags } = require('./tags');
 const { upvote, downvote, unvote } = require('./votes');
-const { updateComments, createComment, deleteComment } = require('./comments');
+
 const jwt = require('jsonwebtoken'); // need jwt to provide 
 
 let check = require('express-validator').check; 
@@ -10,9 +9,9 @@ let check = require('express-validator').check;
 const express = require('express');
 const router = express.Router(); // 创建路由容器。
 
-const {signup,authenticate,listUsers,searchuser,finduser} = require('./users');
+const {signup,authenticate,listUsers,finduser} = require('./users');
 const {updateQuestions,newQuestion,showQuestion,listQuestions,removeQuestion } = require('./questions');
-const {listByTags, listByUser} = require('./questions'); 
+// remove question前端还没有写。
 const {updateAnswers,newAnswer,deleteAnswer} = require('./answers'); 
 
 // 删除的时候只有自己写的内容，或者管理员权限可以删除内容
@@ -28,10 +27,6 @@ const remove_question_qualify = (req, res, next) => {
   res.status(401).end();
 };
 
-const remove_comment_qualify = (req, res, next) => {
-  if (req.comment.author._id.equals(req.user.id) || req.user.role == 'admin') return next(); 
-  res.status(401).end();
-}
 
 const userAuth = (req, res, next) => {
   // console.log('req.headers: ', req.headers);
@@ -100,8 +95,6 @@ router.post('/authenticate',  [
 
 //users
 router.get('/users', listUsers); // pass
-
-router.get('/users/:search', searchuser); // pass 
 router.get('/user/:username', finduser); // pass
 
 //questions
@@ -128,8 +121,8 @@ router.post('/questions', [userAuth, [ // pass all
 
 router.get('/question/:question', showQuestion); // pass, can show all questions 
 router.get('/question', listQuestions); // pass
-router.get('/questions/:tags', listByTags); // pass， 用score来统计不同tag出现的次数。
-router.get('/question/user/:username', listByUser);
+// router.get('/questions/:tags', listByTags); // pass， 用score来统计不同tag出现的次数。
+// router.get('/question/user/:username', listByUser);
 router.delete('/question/:question', [userAuth, remove_question_qualify], removeQuestion); // 为什么这里无法删除。
 
 //tags
@@ -172,20 +165,6 @@ router.delete('/answer/:question/:answer', [userAuth, remove_answer_qualify], de
 router.get('/votes/upvote/:question/:answer?', userAuth, upvote);
 router.get('/votes/downvote/:question/:answer?', userAuth, downvote);
 router.get('/votes/unvote/:question/:answer?', userAuth, unvote);
-
-//comments
-router.param('comment', updateComments);
-router.post('/comment/:question/:answer?', [userAuth, [
-  check('comment')
-    .exists()
-    .withMessage('is required')
-    .notEmpty()
-    .withMessage('cannot be blank')
-    .isLength({ max: 1000 })
-    .withMessage('must be at most 1000 characters long')
-]], createComment);
-router.delete('/comment/:question/:comment', [userAuth, remove_comment_qualify], deleteComment); // 为什么这里有问题。
-router.delete('/comment/:question/:answer/:comment', [userAuth, remove_comment_qualify], deleteComment);
 
 module.exports = (app) => {
   app.use('/api', router); // router 路由对象中的路由都会匹配到/api后面

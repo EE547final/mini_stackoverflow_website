@@ -36,11 +36,13 @@ exports.updateAnswers = async (req, res, next, id) => {
 exports.deleteAnswer = async (req, res, next) => {
   try {
     const { answer } = req.params;
+    console.log('answer: ', answer);
     const result = await req.question.removeAnswer(answer); 
     // find the certain answer, delete from questionSchema
+    console.log('result: ', result);
     res.json(result);
   } catch (error) {
-    next(error);
+    console.log(error);
   }
   next(); 
 };

@@ -1,3 +1,4 @@
+'use strict'
 exports.upvote = async (req, res) => {
   const { id } = req.user;
 

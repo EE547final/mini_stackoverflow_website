@@ -156,15 +156,6 @@ exports.listUsers = async (req, res, next) => {
   next();
 };
 
-exports.searchuser = async (req, res, next) => {
-  try {
-    const users = await User.find({ username: { $regex: req.params.search, $options: 'i' } });
-    res.json(users);
-  } catch (error) {
-    console.log(error); 
-  }
-  next();
-};
 
 exports.finduser = async (req, res, next) => {
   try {

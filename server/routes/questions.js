@@ -74,27 +74,6 @@ exports.listQuestions = async (req, res, next) => {
   }
 };
 
-exports.listByTags = async (req, res, next) => {
-  try {
-    const { sortType = '-score', tags } = req.params;
-    const questions = await Question.find({ tags: { $all: tags } }).sort(sortType);
-    res.json(questions);
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.listByUser = async (req, res, next) => {
-  try {
-    const { username } = req.params;
-    const { sortType = '-created' } = req.headers;
-    const author = await User.findOne({ username });
-    const questions = await Question.find({ author: author.id }).sort(sortType).limit(10);
-    res.json(questions);
-  } catch (error) {
-    next(error);
-  }
-};
 
 exports.removeQuestion = async (req, res, next) => {
   try {
@@ -105,18 +84,5 @@ exports.removeQuestion = async (req, res, next) => {
     next(error);
   }
 
-};
-
-exports.updateComment = async (req, res, next, id) => {
-  try {
-    const comment = await req.question.comments.id(id);
-    if (!comment) 
-      return res.status(404).json({ message: 'Comment not found.' });
-    req.comment = comment;
-  } catch (error) {
-    res.status(400).json({message: 'Invalid comment id.'});
-    return next(error);
-  }
-  next();
 };
 
