@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const voteSchema = require('./voteSchema');
-const commentSchema = require('./commentSchema');
 const answerSchema = require('./answerSchema');
 
 const questionSchema = new mongoose.Schema({
@@ -18,7 +17,6 @@ const questionSchema = new mongoose.Schema({
   tags: [{ type: String, required: true }],
   score: { type: Number, default: 0 },
   votes: [voteSchema],
-  comments: [commentSchema],
   answers: [answerSchema],
   created: { type: Date, default: Date.now }
 });
@@ -52,20 +50,6 @@ questionSchema.methods = {
     return this.save();
   },
 
-  addComment: function (author, body) {
-    this.comments.push({ author, body });
-    console.log('author-: ', author);
-    // author:  61a9349edbcfb55e8b965b70
-    return this.save();
-  },
-
-  removeComment: function (id) {
-    const comment = this.comments.id(id);
-    if (!comment) throw new Error('Comment not found');
-    comment.remove();
-    return this.save();
-  },
-
   addAnswer: function (author, text) {
     this.answers.push({ author, text });
     return this.save();
@@ -81,9 +65,9 @@ questionSchema.methods = {
 
 questionSchema.pre(/^find/, function () {
   this.populate('author')
-    .populate('comments.author', '-role')
+    // .populate('comments.author', '-role')
     .populate('answers.author', '-role')
-    .populate('answers.comments.author', '-role');
+    // .populate('answers.comments.author', '-role');
 });
 
 questionSchema.pre('save', function (next) {
@@ -96,8 +80,8 @@ questionSchema.post('save', function (doc, next) {
   doc
     .populate('author')
     .populate('answers.author', '-role')
-    .populate('comments.author', '-role')
-    .populate('answers.comments.author', '-role')
+    // .populate('comments.author', '-role')
+    // .populate('answers.comments.author', '-role')
     .execPopulate()
     .then(() => next());
 });

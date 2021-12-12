@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const voteSchema = require('./voteSchema');
-const commentSchema = require('./commentSchema');
 // 加入评论功能
 //   author: {  //用户
   //     ref : 'user',
@@ -17,8 +16,7 @@ const answerSchema = new mongoose.Schema({
     type: Date, default: Date.now },
   text: { type: String, required: true },
   score: { type: Number, default: 0 },
-  votes: [voteSchema],
-  comments: [commentSchema]
+  votes: [voteSchema]
 });
 
 answerSchema.set('toJSON', { getters: true });
@@ -45,18 +43,6 @@ answerSchema.methods = {
       this.score += vote;
       this.votes.push({ user, vote });
     }
-    return this;
-  },
-
-  addComment: function (author, body) {
-    this.comments.push({ author, body });
-    return this;
-  },
-
-  removeComment: function (id) {
-    const comment = this.comments.id(id);
-    if (!comment) throw new Error('Comment not found');
-    comment.remove();
     return this;
   }
 };
