@@ -65,9 +65,7 @@ questionSchema.methods = {
 
 questionSchema.pre(/^find/, function () {
   this.populate('author')
-    // .populate('comments.author', '-role')
     .populate('answers.author', '-role')
-    // .populate('answers.comments.author', '-role');
 });
 
 questionSchema.pre('save', function (next) {
@@ -80,8 +78,6 @@ questionSchema.post('save', function (doc, next) {
   doc
     .populate('author')
     .populate('answers.author', '-role')
-    // .populate('comments.author', '-role')
-    // .populate('answers.comments.author', '-role')
     .execPopulate()
     .then(() => next());
 });
