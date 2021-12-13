@@ -3,9 +3,9 @@
 
 ## Local development setup 
 
-**Step 1: Install dependencies**
+<!-- **Step 1: Install dependencies** -->
 
-First, install NodeJS, npm and MongoDB on your OS. Then:
+Install NodeJS, npm and MongoDB on your OS. Then:
 
 In the Server side:
 
