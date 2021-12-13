@@ -7,7 +7,8 @@ import "ant-design-vue/dist/antd.css";
 import axios from 'axios';
 // import * as Icons from '@ant-design/icons-vue'
 
-axios.defaults.baseURL = process.env.VUE_APP_SERVER;
+axios.defaults.baseURL = 'http://52.53.149.154:8080' 
+//process.env.VUE_APP_SERVER;
 
 axios.interceptors.request.use(
   function (config) {
