@@ -60,13 +60,14 @@ yarn run serve
 ### Answer Question Page
 ![image4](images/answer.png)
 
-### Register 
+### Register Page
 ![image5](images/signup.png)
 
-### Signin 
+### Signin Page
 ![image6](images/signin.png)
 
-
+### Search Result Page
+![image7](images/react.png)
 
 
 ## Debugging
