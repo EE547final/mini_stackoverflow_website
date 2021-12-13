@@ -38,11 +38,34 @@ The default server connected in this setting is hosted at http://192.168.0.100:8
 yarn run serve
 ``` -->
 
-<!-- The default server connected in this setting is hosted at https://chafan-test.herokuapp.com with free dyno.
-Thus, **it might be slow when you open it since the dyno will be suspended when unused for a long time and will
-take a minute to restart**.
- -->
 ![image1](images/image1.png)
+
+## Features 
+
+- [x] User Authentication and Authorization
+- [x] Create Question
+- [x] Create Answer
+- [x] Upvote Downvote Answer
+- [x] Create Popular tags on main page
+- [x] Serverside Pagination
+- [x] Search keyword and return questions
+
+## Snapshots
+
+### Home Page
+![image2](images/homepage.png)
+
+### Ask Question Page
+![image3](images/ask.png)
+### Answer Question Page
+![image4](images/answer.png)
+
+### Register 
+![image5](images/signup.png)
+
+### Signin 
+![image6](images/signin.png)
+
 
 
 
