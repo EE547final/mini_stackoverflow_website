@@ -1,5 +1,8 @@
 # BufferOverflow: Mini StackOverflow Website
 
+## Demo
+Deployed on Heroku: https://mini-stackoveflow.herokuapp.com/#/
+
 
 ## Local development setup 
 
